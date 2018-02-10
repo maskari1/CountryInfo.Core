@@ -1,0 +1,11 @@
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.deps.json
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.runtimeconfig.json
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.runtimeconfig.dev.json
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.dll
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.pdb
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.csprojResolveAssemblyReference.cache
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.csproj.CoreCompileInputs.cache
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.AssemblyInfoInputs.cache
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.AssemblyInfo.cs
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.dll
+C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.pdb
