@@ -13443,11 +13443,11 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "C:\\Dev\\WebAPI\\CountryInfo.Core\\CountryInfo.API\\CountryInfo.API.csproj",
+      "projectUniqueName": "C:\\Dev\\GitHub\\CountryInfo.Core\\CountryInfo.API\\CountryInfo.API.csproj",
       "projectName": "CountryInfo.API",
-      "projectPath": "C:\\Dev\\WebAPI\\CountryInfo.Core\\CountryInfo.API\\CountryInfo.API.csproj",
+      "projectPath": "C:\\Dev\\GitHub\\CountryInfo.Core\\CountryInfo.API\\CountryInfo.API.csproj",
       "packagesPath": "C:\\Users\\Mehrz\\.nuget\\packages\\",
-      "outputPath": "C:\\Dev\\WebAPI\\CountryInfo.Core\\CountryInfo.API\\obj\\",
+      "outputPath": "C:\\Dev\\GitHub\\CountryInfo.Core\\CountryInfo.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackagesFallback\\",
