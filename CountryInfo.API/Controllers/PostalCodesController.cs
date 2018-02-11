@@ -18,15 +18,19 @@ namespace CountryInfo.API.Controllers
     {
         private readonly ILogger<PostalCodesController> _logger;
         private readonly ICountryInfoRepository _repository;
+        private IUrlHelper _urlHelper;
 
-        public PostalCodesController(ILogger<PostalCodesController> logger, ICountryInfoRepository repository)
+        public PostalCodesController(ILogger<PostalCodesController> logger, 
+            ICountryInfoRepository repository,
+            IUrlHelper urlHelper)
         {
             _logger = logger;
             _repository = repository;
+            _urlHelper = urlHelper;
         }
 
-        [HttpGet()]
-        public IActionResult GetPostalCodes(int countryId)
+        [HttpGet(Name = "GetPostalCodesForCountry")]
+        public IActionResult GetPostalCodesForCountry(int countryId)
         {
             if (!_repository.CountryExists(countryId))
             {
@@ -37,7 +41,15 @@ namespace CountryInfo.API.Controllers
 
             var postalCodesForCountry = Mapper.Map<IEnumerable<Models.AreaPostalCodeDto>>(postalCodesForCountryFromRepo);
 
-            return Ok(postalCodesForCountry);
+            postalCodesForCountry = postalCodesForCountry.Select(postalCode =>
+            {
+                postalCode = CreateLinksForPostalCode(postalCode);
+                return postalCode;
+            });
+
+            var wrapper = new LinkedCollectionResourceWrapperDto<AreaPostalCodeDto>(postalCodesForCountry);
+
+            return Ok(CreateLinksForPostalCodes(wrapper));
         }
 
         [HttpGet("{id}", Name = "GetPostalCodeForCountry")]
@@ -55,10 +67,10 @@ namespace CountryInfo.API.Controllers
             }
 
             var postalcodeForCountry = Mapper.Map<Models.AreaPostalCodeDto>(postalCodeForCountryFromRepo);
-            return Ok(postalcodeForCountry);
+            return Ok(CreateLinksForPostalCode(postalcodeForCountry));
         }
 
-        [HttpPost()]
+        [HttpPost(Name = "CreatePostalCodeForCountry")]
         public IActionResult CreatePostalCodeForCountry(int countryId,
             [FromBody] PostalCodeForCreation postalCode)
         {
@@ -89,11 +101,11 @@ namespace CountryInfo.API.Controllers
             var postalToReturn = Mapper.Map<Models.AreaPostalCodeDto>(postalEntity);
 
             return CreatedAtRoute("GetPostalCodeForCountry",
-                new { countryId = countryId, id = postalToReturn.Id },
-                postalToReturn);
+                new {  countryId, id = postalToReturn.Id },
+                CreateLinksForPostalCode(postalToReturn));
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id}", Name = "PartiallyUpdatePostalCodeForCountry")]
         public IActionResult PartiallyUpdatePostalCodeForCountry(int countryId, int id,
             [FromBody]JsonPatchDocument<PostalCodeForCreation> patchDoc)
         {
@@ -133,10 +145,9 @@ namespace CountryInfo.API.Controllers
             }
 
             return NoContent();
-
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DeletePostalCodeForCountry")]
         public IActionResult DeletePostalCodeForCountry(int countryId, int id)
         {
             if (!_repository.CountryExists(countryId))
@@ -160,6 +171,46 @@ namespace CountryInfo.API.Controllers
             _logger.LogInformation(100, $"Postal code {id} for country {countryId} was deleted.");
 
             return NoContent();
+        }
+
+        private AreaPostalCodeDto CreateLinksForPostalCode(AreaPostalCodeDto postalCode)
+        {
+            postalCode.Links.Add(new LinkDto(_urlHelper.Link("GetPostalCodeForCountry",
+                new { id = postalCode.Id }),
+                "self",
+                "GET"));
+
+            postalCode.Links.Add(
+                new LinkDto(_urlHelper.Link("DeletePostalCodeForCountry",
+                new { id = postalCode.Id }),
+                "delete_postalcode",
+                "DELETE"));
+
+            postalCode.Links.Add(
+                new LinkDto(_urlHelper.Link("UpdatePostalCodeForCountry",
+                new { id = postalCode.Id }),
+                "update_postalcode",
+                "PUT"));
+
+            postalCode.Links.Add(
+                new LinkDto(_urlHelper.Link("PartiallyUpdatePostalCodeForCountry",
+                new { id = postalCode.Id }),
+                "partially_update_postalcode",
+                "PATCH"));
+
+            return postalCode;
+        }
+
+        private LinkedCollectionResourceWrapperDto<AreaPostalCodeDto> CreateLinksForPostalCodes(
+            LinkedCollectionResourceWrapperDto<AreaPostalCodeDto> postalCodesWrapper)
+        {
+            // link to self
+            postalCodesWrapper.Links.Add(
+                new LinkDto(_urlHelper.Link("GetPostalCodesForCountry", new { }),
+                "self",
+                "GET"));
+
+            return postalCodesWrapper;
         }
     }
 }

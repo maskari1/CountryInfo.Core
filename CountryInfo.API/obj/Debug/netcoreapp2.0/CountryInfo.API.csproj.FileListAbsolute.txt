@@ -9,3 +9,14 @@ C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryIn
 C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.AssemblyInfo.cs
 C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.dll
 C:\Dev\WebAPI\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.pdb
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.deps.json
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.runtimeconfig.json
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.runtimeconfig.dev.json
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.dll
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\bin\Debug\netcoreapp2.0\CountryInfo.API.pdb
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.csprojResolveAssemblyReference.cache
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.csproj.CoreCompileInputs.cache
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.AssemblyInfoInputs.cache
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.AssemblyInfo.cs
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.dll
+C:\Dev\GitHub\CountryInfo.Core\CountryInfo.API\obj\Debug\netcoreapp2.0\CountryInfo.API.pdb

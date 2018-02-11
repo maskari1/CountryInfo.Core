@@ -1,6 +1,6 @@
 ﻿namespace CountryInfo.API.Models
 {
-    public class AreaPostalCodeDto
+    public class AreaPostalCodeDto : LinkedResourceBaseDto
     {
         public int Id { get; set; }
 

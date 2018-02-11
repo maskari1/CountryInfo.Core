@@ -5,6 +5,7 @@ using AutoMapper;
 using System.Collections.Generic;
 using CountryInfo.API.Models;
 using System;
+using System.Linq;
 using CountryInfo.API.Helpers;
 using CountryInfo.API.Entities;
 
@@ -61,6 +62,7 @@ namespace CountryInfo.API.Controllers
             }
 
             var countriesFromRepo = _repository.GetCountries(countriesResourceParameters);
+            var countries = Mapper.Map<IEnumerable<CountryDto>>(countriesFromRepo);
 
             var previousPageLink = countriesFromRepo.HasPrevious ?
                CreateCountriesResourceUri(countriesResourceParameters,
@@ -76,35 +78,69 @@ namespace CountryInfo.API.Controllers
                 pageSize = countriesFromRepo.PageSize,
                 currentPage = countriesFromRepo.CurrentPage,
                 totalPages = countriesFromRepo.TotalPages,
-                previousPageLink = previousPageLink,
-                nextPageLink = nextPageLink
+                previousPageLink,
+                nextPageLink
             };
 
             Response.Headers.Add("X-Pagination",
                 Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
-            var countries = Mapper.Map<IEnumerable<Models.CountryDto>>(countriesFromRepo);
-            return Ok(countries.ShapeData(countriesResourceParameters.Fields));
+            var links = CreateLinksForCountries(countriesResourceParameters,
+                 countriesFromRepo.HasNext, countriesFromRepo.HasPrevious);
+
+            var shapedCountries = countries.ShapeData(countriesResourceParameters.Fields);
+
+            var shapedCountriesWithLinks = shapedCountries.Select(author =>
+            {
+                var countryAsDictionary = author as IDictionary<string, object>;
+                var countryLinks = CreateLinksForCountry(
+                    (int)countryAsDictionary["Id"], countriesResourceParameters.Fields);
+
+                countryAsDictionary.Add("links", countryLinks);
+
+                return countryAsDictionary;
+            });
+
+            var linkedCollectionResource = new
+            {
+                value = shapedCountriesWithLinks,
+                links
+            };
+
+            return Ok(linkedCollectionResource);
         }
 
         [HttpGet("{id}", Name = "GetCountry")]
-        public IActionResult GetCountry(int id, bool includePostalcodes = false)
+        public IActionResult GetCountry(int id, [FromQuery] string fields, bool includePostalCodes = false)
         {
-            var country = _repository.GetCountry(id, includePostalcodes);
+            if (!_typeHelperService.TypeHasProperties<CountryDto>(fields))
+            {
+                return BadRequest();
+            }
 
-            if (country == null)
+            var countryFromRepo = _repository.GetCountry(id, includePostalCodes);
+
+            if (countryFromRepo == null)
             {
                 return NotFound();
             }
 
-            if (includePostalcodes)
+            if (includePostalCodes)
             {
-                var countryWithPostalCodesResult = Mapper.Map<Models.CountryWithPostalCodesDto>(country);
-                return Ok(countryWithPostalCodesResult);
+                var countryWithPostalCodes= Mapper.Map<Models.CountryWithPostalCodesDto>(countryFromRepo);
+                return Ok(countryWithPostalCodes);
             }
 
-            var countryResult = Mapper.Map<Models.CountryDto>(country);
-            return Ok(countryResult);
+            var country = Mapper.Map<Models.CountryDto>(countryFromRepo);
+
+            var links = CreateLinksForCountry(id, fields);
+
+            var linkedResourceToReturn = country.ShapeData(fields)
+                as IDictionary<string, object>;
+
+            linkedResourceToReturn.Add("links", links);
+
+            return Ok(linkedResourceToReturn);
         }
 
         [HttpPost]
@@ -138,7 +174,7 @@ namespace CountryInfo.API.Controllers
                 countryToReturn);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DeleteCountry")]
         public IActionResult DeleteCountry(int id)
         {
             var countryFromRepo = _repository.GetCountry(id, false);
@@ -195,6 +231,74 @@ namespace CountryInfo.API.Controllers
                         pageSize = countriesResourceParameters.PageSize
                     });
             }
+        }
+
+        private IEnumerable<LinkDto> CreateLinksForCountry(int id, string fields)
+        {
+            var links = new List<LinkDto>();
+
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                links.Add(
+                  new LinkDto(_urlHelper.Link("GetCountry", new {  id }),
+                  "self",
+                  "GET"));
+            }
+            else
+            {
+                links.Add(
+                  new LinkDto(_urlHelper.Link("GetCountry", new {  id,  fields }),
+                  "self",
+                  "GET"));
+            }
+
+            links.Add(
+              new LinkDto(_urlHelper.Link("DeleteCountry", new {  id }),
+              "delete_country",
+              "DELETE"));
+
+            links.Add(
+              new LinkDto(_urlHelper.Link("CreatePostalCodeForCountry", new { countryId = id }),
+              "create_postalcode_for_country",
+              "POST"));
+
+            links.Add(
+               new LinkDto(_urlHelper.Link("GetPostalCodesForCountry", new { countryId = id }),
+               "books",
+               "GET"));
+
+            return links;
+        }
+
+        private IEnumerable<LinkDto> CreateLinksForCountries(
+            CountriesResourceParameters countriesResourceParameters,
+            bool hasNext, bool hasPrevious)
+        {
+            var links = new List<LinkDto>();
+
+            // self 
+            links.Add(
+               new LinkDto(CreateCountriesResourceUri(countriesResourceParameters,
+               ResourceUriType.Current)
+               , "self", "GET"));
+
+            if (hasNext)
+            {
+                links.Add(
+                  new LinkDto(CreateCountriesResourceUri(countriesResourceParameters,
+                  ResourceUriType.NextPage),
+                  "nextPage", "GET"));
+            }
+
+            if (hasPrevious)
+            {
+                links.Add(
+                    new LinkDto(CreateCountriesResourceUri(countriesResourceParameters,
+                    ResourceUriType.PreviousPage),
+                    "previousPage", "GET"));
+            }
+
+            return links;
         }
     }
 }
